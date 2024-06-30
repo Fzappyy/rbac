@@ -15,11 +15,27 @@ class AdminController extends Controller
         return view('admin.dashboard');
     }
 
-    public function manageUsers(){
-        $users = User::select('id','name','email')->get();
+    public function manageUsers(Request $request)
+    {
+        $users = User::all();
         $roles = Role::all();
-        $permissions = Permission::all();
 
-        return view('admin.manageUsers')->with(compact('users'));
+        if ($request->isMethod('post')) {
+            $roleIds = $request->input('role_id');
+
+            foreach ($roleIds as $userId => $roleId) {
+                $user = User::find($userId);
+                if ($user) {
+                    $user->roles()->detach();
+                    if ($roleId) {
+                        $user->roles()->attach($roleId);
+                    }
+                }
+            }
+
+            return redirect()->back()->with('success', 'Role assigned successfully.');
+        }
+
+        return view('admin.manageUsers')->with(compact('users', 'roles'));
     }
 }
