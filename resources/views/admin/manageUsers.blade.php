@@ -1,11 +1,11 @@
 @extends('mainLayout')
 
-@section('title','Manage Users')
+@section('title', 'Manage Users')
 
 @section('page-content')
 <div class="container-fluid">
     <div class="row">
-        <div>
+        <div class="col">
             @if(session('success'))
             <div class="alert alert-success" id="flash-message">
                 {{ session('success') }}
@@ -41,7 +41,15 @@
                                 </select>
                             </td>
                             <td>
-                                <button type="submit" name="user_id" value="{{ $user->id }}" class="btn btn-primary">Save</button>
+                                <div class="btn-group" role="group">
+                                    <button type="submit" name="user_id" value="{{ $user->id }}" class="btn btn-primary">Save</button>
+                                    <!-- Add space between buttons for better spacing -->
+                                    &nbsp;
+                                    <form action="{{ route('admin.deleteUser', ['id' => $user->id]) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete this user?');">
+                                        @csrf
+                                        <button type="submit" class="btn btn-danger">Delete</button>
+                                    </form>
+                                </div>
                             </td>
                         </tr>
                         @endforeach
@@ -49,6 +57,9 @@
                 </table>
             </form>
         </div>
+    </div>
+
+    <div class="row mt-3">
         <div class="col">
             <a href="{{ route('dash') }}" class="btn btn-danger">Back</a>
         </div>

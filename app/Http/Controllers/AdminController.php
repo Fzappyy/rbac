@@ -3,9 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
-use App\Models\UserInfo;
 use App\Models\Role;
-use App\Models\Permission;
 use Illuminate\Http\Request;
 
 class AdminController extends Controller
@@ -37,5 +35,17 @@ class AdminController extends Controller
         }
 
         return view('admin.manageUsers')->with(compact('users', 'roles'));
+    }
+
+    public function deleteUser($id)
+    {
+        $user = User::find($id);
+
+        if ($user) {
+            $user->delete();
+            return redirect()->back()->with('success', 'User deleted successfully.');
+        }
+
+        return redirect()->back()->with('error', 'User not found.');
     }
 }
